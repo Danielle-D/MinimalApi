@@ -33,4 +33,16 @@ app.MapPost("/uploadContent", async (IFormFile file) =>
 })
 .WithName("UploadContent");
 
+app.MapPost("/uploadFiles", async (IFormFileCollection files) =>
+{
+    foreach (var file in files)
+    {
+        var fileName = file.FileName;
+
+        using var stream = System.IO.File.OpenWrite(fileName);
+        await file.CopyToAsync(stream);
+    }
+})
+.WithName("UploadFiles");
+
 app.Run();
