@@ -18,31 +18,34 @@ app.MapPost("/fileName", (IFormFile file, CancellationToken cancellationToken) =
 {
     return file.FileName;
 })
-.WithName("GetFileName");
+.WithName("GetFileName")
+.WithDescription("Gets the file name");
 
 app.MapPost("/fileExtension", (IFormFile file, CancellationToken cancellationToken) =>
 {
     return Path.GetExtension(file.FileName);
 })
-.WithName("GetFileExtension");
+.WithName("GetFileExtension")
+.WithDescription("Gets the file extension");
 
 app.MapPost("/uploadContent", async (IFormFile file) =>
 {
     using var stream = System.IO.File.OpenWrite("upload.txt");
     await file.CopyToAsync(stream);
 })
-.WithName("UploadContent");
+.WithName("UploadContent")
+.WithDescription("Uploads the content of the file to a text file");
 
-app.MapPost("/uploadFiles", async (IFormFileCollection files) =>
-{
-    foreach (var file in files)
+app.MapPost("/uploadFiles", [EndpointSummary("Uploads multiple files")] async (IFormFileCollection files) =>
     {
-        var fileName = file.FileName;
+        foreach (var file in files)
+        {
+            var fileName = file.FileName;
 
-        using var stream = System.IO.File.OpenWrite(fileName);
-        await file.CopyToAsync(stream);
-    }
-})
+            using var stream = System.IO.File.OpenWrite(fileName);
+            await file.CopyToAsync(stream);
+        }
+    })
 .WithName("UploadFiles");
 
 app.Run();
