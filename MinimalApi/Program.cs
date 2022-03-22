@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Primitives;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -47,5 +49,15 @@ app.MapPost("/uploadFiles", [EndpointSummary("Uploads multiple files")] async (I
         }
     })
 .WithName("UploadFiles");
+
+app.MapGet("/numberOfGuestsPerTable", (int[] t) => $"table1: {t[0]}, table2: {t[1]}, table3: {t[2]}")
+.WithName("Bind query string values to a primitive type array example");
+
+app.MapGet("/fullName", (string[] names) => $"firstName: {names[0]}, lastName: {names[1]}")
+.WithName("Bind to a string array example");
+
+app.MapGet("/book", (StringValues names)
+        => $"author: {names[0]} , title: {names[1]}")
+.WithName("Bind to StringValues example");
 
 app.Run();
